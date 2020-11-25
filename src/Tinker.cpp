@@ -57,7 +57,7 @@ const PinMapping g_pinmap[] = {
     PIN(RX)
 #  if PLATFORM_ID == PLATFORM_BSOM || PLATFORM_ID == PLATFORM_B5SOM || PLATFORM_ID == PLATFORM_ASOM
     ,
-    PIN(D20), PIN(D21), PIN(D22), PIN(D23),
+    PIN(D20), PIN(D21), PIN(D22), //PIN(D23),
     PIN(A6), PIN(A7)
 #  if PLATFORM_ID == PLATFORM_ASOM
     ,
@@ -79,13 +79,13 @@ int tinkerDigitalWrite(String command);
 int tinkerAnalogRead(String pin);
 int tinkerAnalogWrite(String command);
 
-#ifdef LOG_SERIAL1
-Serial1LogHandler g_logSerial1(115200, LOG_LEVEL_ALL);
-#endif // LOG_SERIAL1
+// #ifdef LOG_SERIAL1
+// Serial1LogHandler g_logSerial1(115200, LOG_LEVEL_ALL);
+// #endif // LOG_SERIAL1
 
-#ifdef LOG_SERIAL
-SerialLogHandler g_logSerial(LOG_LEVEL_ALL);
-#endif // LOG_SERIAL
+// #ifdef LOG_SERIAL
+// SerialLogHandler g_logSerial(LOG_LEVEL_ALL);
+// #endif // LOG_SERIAL
 
 #if defined(HAL_PLATFORM_POWER_MANAGEMENT_OPTIONAL) && HAL_PLATFORM_POWER_MANAGEMENT_OPTIONAL
 // Enable runtime PMIC / FuelGauge detection

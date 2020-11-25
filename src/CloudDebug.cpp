@@ -1,5 +1,6 @@
 #include "Particle.h"
 
+
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
@@ -10,6 +11,11 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 #include "sourcever.h"
 
 #include <vector>
+
+
+#include "SdFat.h"
+#include "SdCardLogHandlerRK.h"
+
 
 void buttonHandler();
 void outOfMemoryHandler(system_event_t event, int param);
@@ -36,9 +42,22 @@ std::vector<bool> traceStack;
 CellularInterpreter cellularInterpreter;
 int memoryRequestFailure = -1;
 
+
+// TODO figure out when to turn on SD logging
+// BSOM eval kit uses D23 for SD chip select line?
+const int SD_CHIP_SELECT = D5; //D23;
+SdFat g_sdcard(&SPI1); 
+// API change in 0.1.0: You must specify the size of the log handler buffer and call both logHandler.setup() and logHandler.loop()!
+SdCardLogHandler<10*1024> sdLogHandler(g_sdcard, SD_CHIP_SELECT, SPI_FULL_SPEED);
+STARTUP(sdLogHandler.withLogsDirName("logs").withDesiredFileSize(64*1024).withMaxFilesToKeep(5).withSyncEveryEntry(false).withCardCheckPeriod(30000));
+
+
 void subscriptionHandler(const char *eventName, const char *data);
 
 void setup() {
+    sdLogHandler.setup();
+    //Log.error("sdcard rc: %d", rc);
+
     Particle.subscribe("particle/device/", subscriptionHandler, MY_DEVICES);
 	System.on(button_click, buttonHandler);
     System.on(out_of_memory, outOfMemoryHandler);
@@ -226,6 +245,7 @@ void setup() {
 }
 
 void loop() {
+    sdLogHandler.loop();
     networkLoop();
 
 	cellularInterpreter.loop();
@@ -281,6 +301,9 @@ static uint16_t convertCurrentLimit(byte b) {
 
 void stateStartTest() {
     startTest = false;
+
+    int sd_rc = g_sdcard.card()->errorCode();
+    Log.info("g_sdcard status: %d", sd_rc);
 
     Log.info("Starting Tests!");
 
