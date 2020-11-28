@@ -402,7 +402,7 @@ void stateCloudWait() {
 	if (millis() - lastConnectReport >= 10000) {
 		lastConnectReport = millis();
 		Log.info("Still trying to connect to the cloud %s", elapsedString((millis() - stateTime) / 1000).c_str());
-#if PLATFORM_ID = PLATFORM_BSOM
+#if !(PLATFORM_ID == PLATFORM_BSOM)
     runPowerReport();
 #endif
 	}
