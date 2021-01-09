@@ -11,6 +11,9 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #include <vector>
 
+PRODUCT_ID(12592);
+PRODUCT_VERSION(1);
+
 void buttonHandler();
 void outOfMemoryHandler(system_event_t event, int param);
 void stateStart();
