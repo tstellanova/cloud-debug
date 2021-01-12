@@ -12,7 +12,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 #include <vector>
 
 PRODUCT_ID(12592);
-PRODUCT_VERSION(1);
+PRODUCT_VERSION(4);
 
 void buttonHandler();
 void outOfMemoryHandler(system_event_t event, int param);
@@ -414,6 +414,7 @@ void stateCloudReport() {
 	Log.info("Successfully connected to the Particle cloud in %s", elapsedString((millis() - stateTime) / 1000).c_str());
     stateHandler = stateCloudConnected;
     cloudConnectTime = millis();
+    Particle.publishVitals(30);
 }
 
 void stateCloudConnected() {
@@ -434,10 +435,9 @@ void stateCloudConnected() {
         runPowerReport();
 
     	Log.info("Free Memory: %lu", System.freeMemory());
-
         commandParser.printMessagePrompt();
     }
-
+    
     static bool reportedTime = false;
     if (Time.isValid() && !reportedTime) {
         reportedTime = true;
